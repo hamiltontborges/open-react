@@ -1,19 +1,36 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { auth } from '../../firebase-config';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Image,
+  ScrollView
+} from 'react-native';
+import {
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut
+} from 'firebase/auth';
+import { auth } from '../../../firebase-config';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import { 
+
+import {
   ANDROID_CLIENT_ID,
   IOS_CLIENT_ID,
   EXPO_CLIENT_ID,
 } from '@env';
 
+import logo from '../../../assets/open-unifeob.png';
+
+
 WebBrowser.maybeCompleteAuthSession();
 
-const Login = () => {
+const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
@@ -30,14 +47,14 @@ const Login = () => {
 
 
   useEffect(() => {
-    if(response?.type === 'success'){
+    if (response?.type === 'success') {
       setAccessToken(response.authentication.accessToken);
     }
   }, [response]);
 
   const getUserData = async () => {
     let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-      headers: { Authorization: `Bearer ${accessToken}`}
+      headers: { Authorization: `Bearer ${accessToken}` }
     });
 
     userInfoResponse.json().then(data => {
@@ -67,11 +84,11 @@ const Login = () => {
 
   const login = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = awaitUpWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
       console.log(`Logged in with: ${user.email}`);
     }
-    catch(error) {
+    catch (error) {
       console.log(`ERRO => Mensagem: ${error}`);
     }
   }
@@ -83,7 +100,9 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: "center" }} style={styles.container}>
+      <Image source={logo} style={styles.logo} resizeMode="contain"></Image>
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -104,7 +123,7 @@ const Login = () => {
           onPress={login}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={register}
@@ -113,7 +132,7 @@ const Login = () => {
           <Text style={styles.buttonOutlineText}>Register</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={accessToken ? getUserData : () => { promptAsync({showInRevents:  true })}}
+          onPress={accessToken ? getUserData : () => { promptAsync({ showInRevents: true }) }}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Google</Text>
@@ -125,19 +144,26 @@ const Login = () => {
           <Text style={styles.buttonOutlineText}>signOut</Text>
         </TouchableOpacity>
       </View>
+        <TouchableOpacity
+          // onPress={logout}
+        >
+          <Text style={styles.buttonOutlineText}>Já possui cadastro? Entre</Text>
+        </TouchableOpacity>
+
       <Text>{user?.email}</Text>
 
-    </View>
+    </ScrollView>
   )
 }
 
-export default Login;
+export default SignUp;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#1d3468",
+  },
+  logo: {
+    width: '80%'
   },
   inputContainer: {
     width: '80%'
@@ -150,16 +176,16 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   buttonContainer: {
-    width: '60%',
+    width: '70%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 20,
   },
   button: {
-    backgroundColor: '#0782F9',
+    backgroundColor: '#e9c915',
     width: '100%',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 15,
     alignItems: 'center',
   },
   buttonOutline: {
@@ -169,7 +195,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   buttonText: {
-    color: 'white',
+    color: '#1d3468',
     fontWeight: '700',
     fontSize: 16,
   },
