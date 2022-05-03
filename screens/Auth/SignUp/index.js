@@ -1,156 +1,153 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+
+import { registerUser } from '../../../services/AuthService';
+
 import {
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   Image,
   ScrollView
 } from 'react-native';
-import {
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut
-} from 'firebase/auth';
-import { auth } from '../../../firebase-config';
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
-
-import {
-  ANDROID_CLIENT_ID,
-  IOS_CLIENT_ID,
-  EXPO_CLIENT_ID,
-} from '@env';
+import { Snackbar } from 'react-native-paper';
+import SignInput from '../../../components/Sign/SignInput';
+import SignButton from '../../../components/Sign/SignButton';
+import GoogleButton from '../../../components/Sign/GoogleButton';
 
 import logo from '../../../assets/open-unifeob.png';
-
-
-WebBrowser.maybeCompleteAuthSession();
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState({});
+
+  const [snackBarInfo, setSnackBarInfo] = useState({ visible: false, color: '', message: '' });
 
   const navigation = useNavigation();
 
-  const [accessToken, setAccessToken] = useState();
+  const signupValidationSchema = yup.object().shape({
+    email: yup
+      .string()
+      .email("Preencher com email válido")
+      .required('Preenchimento obrigatório'),
+    password: yup
+      .string()
+      .min(8, ({ min }) => `A senha deve ter no mínimo ${min} caracteres`)
+      .required('Preenchimento obrigatório'),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password'), null], 'As senhas precisam ser iguais.')
+      .required('Preenchimento obrigatório'),
+  })
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: ANDROID_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-    expoClientId: EXPO_CLIENT_ID,
-  });
-
-
-  useEffect(() => {
-    if (response?.type === 'success') {
-      setAccessToken(response.authentication.accessToken);
-    }
-  }, [response]);
-
-  const getUserData = async () => {
-    let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-
-    userInfoResponse.json().then(data => {
-      setUser(data);
-    });
-  }
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      if (user) {
-        setUser(user);
-        // navigation.replace("Home");
-      }
-    });
-
-    return unsubscribe
-  }, []);
 
   const register = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(userCredential);
-    } catch (error) {
-      console.log(`ERRO => Mensagem: ${error}`);
-    }
-  }
-
-  const login = async () => {
-    try {
-      const userCredential = awaitUpWithEmailAndPassword(auth, email, password);
-      setUser(userCredential.user);
-      console.log(`Logged in with: ${user.email}`);
+      await registerUser(email, password);
+      setSnackBarInfo({ visible: true, color: 'green', message: 'Usuário cadastrado com sucesso!' })
+      setTimeout(() => navigation.navigate('SignIn'), 1500);
     }
     catch (error) {
-      console.log(`ERRO => Mensagem: ${error}`);
+      setSnackBarInfo({ visible: true, color: 'red', message: error })
     }
   }
-
-  const logout = async () => {
-    setUser({});
-    console.log(`User ${user.email} logout`);
-    await signOut(auth);
-  };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: "center" }} style={styles.container}>
       <Image source={logo} style={styles.logo} resizeMode="contain"></Image>
+      <Formik
+        validationSchema={signupValidationSchema}
+        initialValues={{ email: '', password: '', confirmPassword: '' }}
+        onSubmit={() => {
+          register();
+        }}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid }) => (
+          <>
+            <View style={styles.inputContainer}>
+              <SignInput
+                nameInput={'email'}
+                iconName={'email'}
+                placeholder={"Email"}
+                value={values.email}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                keyboardType={'email-address'}
+                password={false}
+                hasError={(errors.email && touched.email) ? true : false}
+                messageError={errors.email}
+              />
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={text => setEmail(text)}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={text => setPassword(text)} s
-          style={styles.input}
-          secureTextEntry
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={login}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={register}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>Register</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={accessToken ? getUserData : () => { promptAsync({ showInRevents: true }) }}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>Google</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={logout}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>signOut</Text>
-        </TouchableOpacity>
-      </View>
-        <TouchableOpacity
-          // onPress={logout}
-        >
-          <Text style={styles.buttonOutlineText}>Já possui cadastro? Entre</Text>
-        </TouchableOpacity>
+              <SignInput
+                nameInput={'password'}
+                iconName={'lock'}
+                placeholder={"Senha"}
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                keyboardType={'default'}
+                password={true}
+                hasError={(errors.password && touched.password) ? true : false}
+                messageError={errors.password}
+              />
 
-      <Text>{user?.email}</Text>
+              <SignInput
+                nameInput={'confirmPassword'}
+                iconName={'lock'}
+                placeholder={"Confirme a senha"}
+                value={values.confirmPassword}
+                onChangeText={handleChange('confirmPassword')}
+                onBlur={handleBlur('confirmPassword')}
+                keyboardType={'default'}
+                password={true}
+                hasError={(errors.confirmPassword && touched.confirmPassword) ? true : false}
+                messageError={errors.confirmPassword}
+              />
+            </View>
+
+            <SignButton
+              title={'Submit'}
+              onPress={() => {
+                handleSubmit();
+                setEmail(values.email);
+                setPassword(values.password);
+              }}
+              iconName={'person-add'}
+              text={'REGISTRAR'}
+              disabled={!isValid}
+            />
+          </>
+        )}
+      </Formik>
+
+      <View style={styles.divider}>
+        <View style={styles.dividerLine} />
+        <View>
+          <Text style={styles.dividerText}>OU</Text>
+        </View>
+        <View style={styles.dividerLine} />
+      </View>
+
+      <GoogleButton />
+      <TouchableOpacity
+        onPress={() => navigation.replace("SignIn")}
+        style={styles.signUpMessage}
+      >
+        <Text style={styles.signUpMessageText}>Já possui cadastro? </Text>
+        <Text style={styles.signUpMessageTextBold}>Entre</Text>
+      </TouchableOpacity>
+
+      <Snackbar
+        visible={snackBarInfo.visible}
+        duration={5000}
+        style={{ backgroundColor: snackBarInfo.color }}
+        onDismiss={() => setSnackBarInfo({ visible: false })}
+      >
+        {snackBarInfo.message}
+      </Snackbar>
 
     </ScrollView>
   )
@@ -163,45 +160,55 @@ const styles = StyleSheet.create({
     backgroundColor: "#1d3468",
   },
   logo: {
-    width: '80%'
+    height: 100,
+    width: '50%'
   },
   inputContainer: {
     width: '80%'
   },
-  input: {
-    backgroundColor: 'white',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 10,
-    marginTop: 5,
+  forgotPassContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '80%',
+    paddingTop: 5,
   },
-  buttonContainer: {
-    width: '70%',
-    justifyContent: 'center',
+  forgotPass: {
+    flexDirection: 'row',
+    width: '50%',
+    justifyContent: 'flex-end',
+  },
+  forgotPassText: {
+    fontSize: 14,
+    color: '#e9c915',
+  },
+  divider: {
+    width: '80%',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20,
+    marginVertical: 20
   },
-  button: {
-    backgroundColor: '#e9c915',
-    width: '100%',
-    padding: 15,
-    borderRadius: 15,
-    alignItems: 'center',
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#f0f0f0'
   },
-  buttonOutline: {
-    backgroundColor: 'white',
-    marginTop: 5,
-    borderColor: '#0782F9',
-    borderWidth: 2,
+  dividerText: {
+    color: '#f0f0f0',
+    width: 50,
+    textAlign: 'center'
   },
-  buttonText: {
-    color: '#1d3468',
-    fontWeight: '700',
+  signUpMessage: {
+    flexDirection: 'row',
+    marginTop: 10,
+    padding: 10,
+  },
+  signUpMessageText: {
     fontSize: 16,
+    color: '#e9c915',
   },
-  buttonOutlineText: {
-    color: '#0782F9',
-    fontWeight: '700',
+  signUpMessageTextBold: {
     fontSize: 16,
+    color: '#e9c915',
+    fontWeight: 'bold'
   },
 })

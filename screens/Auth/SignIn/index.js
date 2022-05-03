@@ -1,5 +1,14 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+
+import { loginUser } from '../../../services/AuthService';
+import {
+  onAuthStateChanged,
+} from 'firebase/auth';
+import { auth } from '../../../firebase-config';
+
 import {
   StyleSheet,
   Text,
@@ -8,63 +17,32 @@ import {
   Image,
   ScrollView
 } from 'react-native';
-import {
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut
-} from 'firebase/auth';
-
-import { auth } from '../../../firebase-config';
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
-
-import {
-  ANDROID_CLIENT_ID,
-  IOS_CLIENT_ID,
-  EXPO_CLIENT_ID,
-} from '@env';
+import { Snackbar } from 'react-native-paper';
+import SignInput from '../../../components/Sign/SignInput';
+import SignButton from '../../../components/Sign/SignButton';
+import GoogleButton from '../../../components/Sign/GoogleButton';
 
 import logo from '../../../assets/open-unifeob.png';
-import googleLogo from '../../../assets/google.png';
-
-import SignInput from '../../../components/SignInput';
-import SignButton from '../../../components/SignButton';
-
-
-WebBrowser.maybeCompleteAuthSession();
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
 
+  const [snackBarInfo, setSnackBarInfo] = useState({ visible: false, color: '', message: '' });
+
   const navigation = useNavigation();
 
-  const [accessToken, setAccessToken] = useState();
-
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: ANDROID_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-    expoClientId: EXPO_CLIENT_ID,
-  });
-
-
-  useEffect(() => {
-    if (response?.type === 'success') {
-      setAccessToken(response.authentication.accessToken);
-    }
-  }, [response]);
-
-  const getUserData = async () => {
-    let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-
-    userInfoResponse.json().then(data => {
-      setUser(data);
-    });
-  }
+  const signinValidationSchema = yup.object().shape({
+    email: yup
+      .string()
+      .email("Preencher com email válido")
+      .required('Preenchimento obrigatório'),
+    password: yup
+      .string()
+      .min(8, ({ min }) => `A senha deve ter no mínimo ${min} caracteres`)
+      .required('Preenchimento obrigatório'),
+  })
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
@@ -77,72 +55,82 @@ const SignIn = () => {
     return unsubscribe
   }, []);
 
-  const register = async () => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(userCredential);
-    } catch (error) {
-      console.log(`ERRO => Mensagem: ${error}`);
-    }
-  }
 
   const login = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      setUser(userCredential.user);
-      console.log(`Logged in with: ${user.email}`);
+      await loginUser(email, password);
+      setSnackBarInfo({ visible: true, color: 'green', message: 'Login efetuado com sucesso!' })
+      setTimeout(() => navigation.navigate('Home'), 1500);
     }
     catch (error) {
-      console.log(`ERRO => Mensagem: ${error}`);
+      setSnackBarInfo({ visible: true, color: 'red', message: error })
     }
   }
-
-  const logout = async () => {
-    setUser({});
-    console.log(`User ${user.email} logout`);
-    await signOut(auth);
-  };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: "center" }} style={styles.container}>
       <Image source={logo} style={styles.logo} resizeMode="contain"></Image>
-      <View style={styles.inputContainer}>
+      <Formik
+        validationSchema={signinValidationSchema}
+        initialValues={{ email: '', password: '' }}
+        onSubmit={() => {
+          login();
 
-        <SignInput
-          iconName={'email'}
-          placeholder={"Email"}
-          value={email}
-          onChangeText={text => setEmail(text)}
-          keyboardType={'email-address'}
-          password={false}
-        />
+        }}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid }) => (
+          <>
+            <View style={styles.inputContainer}>
+              <SignInput
+                nameInput={'email'}
+                iconName={'email'}
+                placeholder={"Email"}
+                value={values.email}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                keyboardType={'email-address'}
+                password={false}
+                hasError={(errors.email && touched.email) ? true : false}
+                messageError={errors.email}
+              />
 
-        <SignInput
-          iconName={'lock'}
-          placeholder={"Password"}
-          value={password}
-          onChangeText={text => setPassword(text)}
-          keyboardType={'default'}
-          password={true}
-        />
-      </View>
+              <SignInput
+                nameInput={'password'}
+                iconName={'lock'}
+                placeholder={"Senha"}
+                value={values.password}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                keyboardType={'default'}
+                password={true}
+                hasError={(errors.password && touched.password) ? true : false}
+                messageError={errors.password}
+              />
+            </View>
 
-      <View style={styles.forgotPassContainer}>
-        <TouchableOpacity
-          // onPress={() => navigation.replace("SignUp")}
-          style={styles.forgotPass}
-        >
-          <Text style={styles.forgotPassText}>Esqueceu sua senha? </Text>
-        </TouchableOpacity>
-      </View>
+            <View style={styles.forgotPassContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Recuperação de Senha")}
+                style={styles.forgotPass}
+              >
+                <Text style={styles.forgotPassText}>Esqueceu sua senha? </Text>
+              </TouchableOpacity>
+            </View>
 
-      <View style={styles.buttonContainer}>
-        <SignButton
-          onPress={login}
-          iconName={'login'}
-          text={'LOGIN'}
-        />
-      </View>
+            <SignButton
+              title={'Submit'}
+              onPress={() => {
+                handleSubmit();
+                setEmail(values.email);
+                setPassword(values.password);
+              }}
+              iconName={'login'}
+              text={'LOGIN'}
+              disabled={!isValid}
+            />
+          </>
+        )}
+      </Formik>
 
       <View style={styles.divider}>
         <View style={styles.dividerLine} />
@@ -152,31 +140,23 @@ const SignIn = () => {
         <View style={styles.dividerLine} />
       </View>
 
-      <View style={styles.buttonGoogleContainer}>
-        <TouchableOpacity
-          onPress={accessToken ? getUserData : () => { promptAsync({ showInRevents: true }) }}
-          style={styles.buttonGoogle}
-        >
-          <Image source={googleLogo} style={styles.googleLogo} resizeMode="contain"></Image>
-          <Text style={styles.buttonGoogleText}>Entrar com Google</Text>
-        </TouchableOpacity>
-
-        {/* <TouchableOpacity
-          onPress={logout}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>signOut</Text>
-        </TouchableOpacity> */}
-      </View>
+      <GoogleButton />
       <TouchableOpacity
-        onPress={() => navigation.replace("SignUp")}
+        onPress={() => navigation.push("Registrar")}
         style={styles.signUpMessage}
       >
         <Text style={styles.signUpMessageText}>Ainda não possui cadastro? </Text>
         <Text style={styles.signUpMessageTextBold}>Cadastre-se</Text>
       </TouchableOpacity>
 
-      <Text>{user?.email}</Text>
+      <Snackbar
+        visible={snackBarInfo.visible}
+        duration={5000}
+        style={{ backgroundColor: snackBarInfo.color }}
+        onDismiss={() => setSnackBarInfo({ visible: false })}
+      >
+        {snackBarInfo.message}
+      </Snackbar>
 
     </ScrollView>
   )
@@ -210,12 +190,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#e9c915',
   },
-  buttonContainer: {
-    width: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 15,
-  },
   divider: {
     width: '80%',
     flexDirection: 'row',
@@ -232,28 +206,6 @@ const styles = StyleSheet.create({
     width: 50,
     textAlign: 'center'
   },
-  buttonGoogleContainer: {
-    width: '80%',
-  },
-  buttonGoogle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EEEEEE',
-    paddingVertical: 12,
-    borderRadius: 10,
-
-  },
-  buttonGoogleText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 20,
-  },
-  googleLogo: {
-    width: 28,
-    height: 28,
-  },
   signUpMessage: {
     flexDirection: 'row',
     marginTop: 10,
@@ -268,5 +220,4 @@ const styles = StyleSheet.create({
     color: '#e9c915',
     fontWeight: 'bold'
   },
-
 })
