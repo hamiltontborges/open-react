@@ -11,7 +11,7 @@ const Stack = createNativeStackNavigator();
 
 export default () => (
   <Stack.Navigator
-    initialRouteName='Preload'
+    initialRouteName='Signin'
     screenOptions={{
       headerStyle: {
         backgroundColor: '#09142c',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 
@@ -13,9 +13,9 @@ import SignButton from '../../components/Sign/SignButton';
 
 
 const ForgotPassword = () => {
-  const [snackBarInfo, setSnackBarInfo] = useState({ visible: false, color: '', message: '' });
   const navigation = useNavigation();
-
+  
+  const [snackBarInfo, setSnackBarInfo] = useState({ visible: false, color: '', message: '' });
 
   const logoutUser = async () => {
     try {
@@ -36,6 +36,7 @@ const ForgotPassword = () => {
               title={'Submit'}
               onPress={() => {
                 logoutUser();
+
               }}
               iconName={'send'}
               text={'LOGOUT'}

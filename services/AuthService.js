@@ -20,10 +20,10 @@ export const registerUser = async (email, password) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     console.log(userCredential);
   } catch (error) {
-    if(error.code === 'auth/email-already-in-use') {
+    if (error.code === 'auth/email-already-in-use') {
       throw error = 'Email já cadastrado.'
     } else {
-    console.log(`ERRO => Mensagem: ${error.code}`);
+      console.log(`ERRO => Mensagem: ${error.code}`);
     }
   }
 }
@@ -32,6 +32,7 @@ export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     console.log(`Logged in with: ${email}`);
+    console.log(userCredential.user.uid);
     return userCredential.user;
   }
   catch (error) {

@@ -1,7 +1,10 @@
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigation } from '@react-navigation/core';
-import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { UserContext } from '../../../contexts/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import { loginUser } from '../../../services/AuthService';
 import {
@@ -23,8 +26,12 @@ import SignButton from '../../../components/Sign/SignButton';
 import GoogleButton from '../../../components/Sign/GoogleButton';
 
 import logo from '../../../assets/open-unifeob.png';
+import { getDocByEmail, getDocById, signIn } from '../../../db/Firestore';
+import { get } from 'react-native/Libraries/Utilities/PixelRatio';
 
 const SignIn = () => {
+  const { dispatch: userDispatch } = useContext(UserContext);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
@@ -56,11 +63,45 @@ const SignIn = () => {
   }, []);
 
 
+
+  const updateUserLogin = async (email) => {
+    try {
+      const item = await getDocByEmail(email);
+      item.forEach((docu) => {
+        signIn(docu.id);
+        setContext(docu.id, docu.data().name, docu.data().email, docu.data().picture)
+      })
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  const setContext = (id, name, email, picture) => {
+
+    AsyncStorage.setItem('token', id);
+
+    userDispatch( {
+      type: 'setAvatar',
+      payload: {
+        avatar: picture
+      },
+      type: 'setEmail',
+      payload: {
+        email: email
+      },
+      type: 'setFullname',
+      payload: {
+        fullname: name
+      },
+    })
+  }
+
   const login = async () => {
     try {
       await loginUser(email, password);
+      updateUserLogin(email);
       setSnackBarInfo({ visible: true, color: 'green', message: 'Login efetuado com sucesso!' })
-      setTimeout(() => navigation.navigate('Home'), 1500);
+      setTimeout(() => navigation.replace('Home'), 1500);
     }
     catch (error) {
       setSnackBarInfo({ visible: true, color: 'red', message: error })
@@ -121,7 +162,7 @@ const SignIn = () => {
               title={'Submit'}
               onPress={() => {
                 handleSubmit();
-                setEmail(values.email);
+                setEmail(values.email.toLowerCase());
                 setPassword(values.password);
               }}
               iconName={'login'}

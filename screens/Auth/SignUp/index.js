@@ -19,10 +19,12 @@ import SignButton from '../../../components/Sign/SignButton';
 import GoogleButton from '../../../components/Sign/GoogleButton';
 
 import logo from '../../../assets/open-unifeob.png';
+import { signUp } from '../../../db/Firestore';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
   const [snackBarInfo, setSnackBarInfo] = useState({ visible: false, color: '', message: '' });
 
@@ -32,6 +34,10 @@ const SignUp = () => {
     email: yup
       .string()
       .email("Preencher com email válido")
+      .required('Preenchimento obrigatório'),
+    name: yup
+      .string()
+      .min(10, ({ min }) => `O nome deve ter nome mínimo ${min} caracteres`)
       .required('Preenchimento obrigatório'),
     password: yup
       .string()
@@ -48,6 +54,7 @@ const SignUp = () => {
     try {
       await registerUser(email, password);
       setSnackBarInfo({ visible: true, color: 'green', message: 'Usuário cadastrado com sucesso!' })
+      signUp(email, name);
       setTimeout(() => navigation.navigate('SignIn'), 1500);
     }
     catch (error) {
@@ -60,7 +67,7 @@ const SignUp = () => {
       <Image source={logo} style={styles.logo} resizeMode="contain"></Image>
       <Formik
         validationSchema={signupValidationSchema}
-        initialValues={{ email: '', password: '', confirmPassword: '' }}
+        initialValues={{ email: '', name: '', password: '', confirmPassword: '' }}
         onSubmit={() => {
           register();
         }}
@@ -79,6 +86,19 @@ const SignUp = () => {
                 password={false}
                 hasError={(errors.email && touched.email) ? true : false}
                 messageError={errors.email}
+              />
+    
+              <SignInput
+                nameInput={'name'}
+                iconName={'person'}
+                placeholder={"Nome completo"}
+                value={values.name}
+                onChangeText={handleChange('name')}
+                onBlur={handleBlur('name')}
+                keyboardType={'default'}
+                password={false}
+                hasError={(errors.name && touched.name) ? true : false}
+                messageError={errors.name}
               />
 
               <SignInput
@@ -112,7 +132,8 @@ const SignUp = () => {
               title={'Submit'}
               onPress={() => {
                 handleSubmit();
-                setEmail(values.email);
+                setEmail(values.email.toLowerCase());
+                setName(values.name);
                 setPassword(values.password);
               }}
               iconName={'person-add'}

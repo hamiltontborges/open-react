@@ -1,75 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, Text } from 'react-native';
-import * as Google from 'expo-auth-session/providers/google';
-import googleLogo from '../../../assets/google.png';
-
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import {
   ANDROID_CLIENT_ID,
   IOS_CLIENT_ID,
   EXPO_CLIENT_ID,
 } from '@env';
 
-
-export default () => {
-
-  const [accessToken, setAccessToken] = useState();
-
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: ANDROID_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-    expoClientId: EXPO_CLIENT_ID,
-  });
-
-  useEffect(() => {
-    if (response?.type === 'success') {
-      setAccessToken(response.authentication.accessToken);
-    }
-  }, [response]);
-
-  const getUserData = async () => {
-    let userInfoResponse = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-
-    userInfoResponse.json().then(data => {
-      setUser(data);
-      console.log(data);
-    });
-  }
-  return (
-    <View style={styles.buttonGoogleContainer}>
-      <TouchableOpacity
-        onPress={accessToken ? getUserData : () => { promptAsync({ showInRevents: true }) }}
-        style={styles.buttonGoogle}
-      >
-        <Image source={googleLogo} style={styles.googleLogo} resizeMode="contain"></Image>
-        <Text style={styles.buttonGoogleText}>Entrar com Google</Text>
-      </TouchableOpacity>
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-  buttonGoogleContainer: {
-    width: '80%',
-  },
-  buttonGoogle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EEEEEE',
-    paddingVertical: 12,
-    borderRadius: 10,
-
-  },
-  buttonGoogleText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 20,
-  },
-  googleLogo: {
-    width: 28,
-    height: 28,
-  },
+GoogleSignin.configure({
+  androidClientId: ANDROID_CLIENT_ID,
+  iosClientId: IOS_CLIENT_ID,
+  expoClientId: EXPO_CLIENT_ID,
 });
+
+export const signIn = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    this.setState({ userInfo });
+  } catch (error) {
+    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      // user cancelled the login flow
+    } else if (error.code === statusCodes.IN_PROGRESS) {
+      // operation (e.g. sign in) is in progress already
+    } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      // play services not available or outdated
+    } else {
+      // some other error happened
+    }
+  }
+};
+
+export const isSignedIn = async () => {
+  const isSignedIn = await GoogleSignin.isSignedIn();
+  this.setState({ isLoginScreenPresented: !isSignedIn });
+};
+
+export const getCurrentUser = async () => {
+  const currentUser = await GoogleSignin.getCurrentUser();
+  this.setState({ currentUser });
+};
+
+export const signOut = async () => {
+  try {
+    await GoogleSignin.signOut();
+    this.setState({ user: null }); // Remember to remove the user from your app's state as well
+  } catch (error) {
+    console.error(error);
+  }
+};

@@ -8,13 +8,13 @@ import * as Animatable from 'react-native-animatable';
 const Preload = () => {
 
   const navigation = useNavigation();
-  
+
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem('token');
       if(token !== null) {
         //validar token
-        // navigation.replace('Home');
+        navigation.replace('Home');
       } else {
         setTimeout(() => {
           navigation.replace('SignIn');
