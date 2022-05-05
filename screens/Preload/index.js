@@ -14,8 +14,8 @@ const Preload = () => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem('token');
       if(token) {
-        // navigation.replace('SignIn')
-        navigation.replace('MainTab');
+        navigation.replace('SignIn')
+        // navigation.replace('MainTab');
         // navigation.reset({routes: [{name: 'MainTab'}]});
       } else {
         setTimeout(() => {

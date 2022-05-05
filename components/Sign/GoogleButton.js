@@ -4,7 +4,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import googleLogo from '../../assets/google.png';
 import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { siginGoogle } from '../../db/Firestore';
+import { getDocByEmail, siginGoogle } from '../../db/Firestore';
 import { UserContext } from '../../contexts/UserContext';
 
 import {
@@ -31,7 +31,7 @@ export default GoogleButton = () => {
     if (response?.type === 'success') {
       setAccessToken(response.authentication.accessToken)
       await getUserData(response.authentication.accessToken)
-      navigation.replace("Home")
+      navigation.replace('MainTab');
     }
   }, [response]);
 
@@ -39,21 +39,50 @@ export default GoogleButton = () => {
     siginGoogle(email, name, pictureLink);
   }
 
-  const setContext = (name, email, picture) => {
-    userDispatch( {
+  const updateUserLogin = async (email) => {
+    try {
+      const item = await getDocByEmail(email);
+      item.forEach((docu) => {
+        const data = docu.data();
+        console.log(docu.id)
+        setContext(docu.id, data.full_name, data.email, data.picture, data.course)
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  const setContext = (id, name, email, picture, course) => {
+    userDispatch({
+      type: 'setId',
+      payload: {
+        id: id
+      }
+    });
+    userDispatch({
       type: 'setAvatar',
       payload: {
         avatar: picture
-      },
+      }
+    });
+    userDispatch({
       type: 'setEmail',
       payload: {
         email: email
-      },
+      }
+    });
+    userDispatch({
       type: 'setFullname',
       payload: {
         fullname: name
-      },
-    })
+      }
+    });
+    userDispatch({
+      type: 'setCourse',
+      payload: {
+        fullname: course
+      }
+    });
   }
 
   const getUserData = async (accessToken) => {
@@ -65,7 +94,7 @@ export default GoogleButton = () => {
       setUserInfo(data);
       isSignUp(data.email, data.name, data.picture);
       AsyncStorage.setItem('token', response.authentication.accessToken);
-      setContext(data.name, data.email, data.picture);
+      updateUserLogin(data.email)
     });
   }
 

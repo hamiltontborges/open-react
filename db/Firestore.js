@@ -57,6 +57,3 @@ export const getDocById = async (id) => {
   }
 }
 
-export const checkToken = async () => {
-  
-}

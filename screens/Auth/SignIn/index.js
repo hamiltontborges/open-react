@@ -54,7 +54,6 @@ const SignIn = () => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) {
         setUser(user);
-        // navigation.replace("Home");
       }
     });
 
@@ -66,35 +65,47 @@ const SignIn = () => {
       const item = await getDocByEmail(email);
       item.forEach((docu) => {
         signIn(docu.id);
-        const data = docu.data()
-        setContext(token, data.name, data.email, data.picture, data.course)
+        const data = docu.data();
+        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course)
       })
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
 
-  const setContext = (token, name, email, picture, course) => {
+  const setContext = (token, id, name, email, picture, course) => {
 
     AsyncStorage.setItem('token', token);
 
-    userDispatch( {
+    userDispatch({
+      type: 'setId',
+      payload: {
+        id: id
+      }
+    });
+    userDispatch({
       type: 'setAvatar',
       payload: {
         avatar: picture
-      },
+      }
+    });
+    userDispatch({
       type: 'setEmail',
       payload: {
         email: email
-      },
+      }
+    });
+    userDispatch({
       type: 'setFullname',
       payload: {
         fullname: name
-      },
+      }
+    });
+    userDispatch({
       type: 'setCourse',
       payload: {
         course: course
-      },
+      }
     })
   }
 
@@ -103,7 +114,7 @@ const SignIn = () => {
       let token = await loginUser(email, password);
       updateUserLogin(email, token);
       setSnackBarInfo({ visible: true, color: 'green', message: 'Login efetuado com sucesso!' })
-      setTimeout(() => navigation.replace('Home'), 1500);
+      setTimeout(() => navigation.replace('MainTab'), 1500);
     }
     catch (error) {
       setSnackBarInfo({ visible: true, color: 'red', message: error })
