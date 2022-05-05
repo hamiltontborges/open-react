@@ -1,4 +1,5 @@
-import { View, Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+
 import React from 'react'
 
 const Playlists = () => {
