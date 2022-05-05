@@ -4,14 +4,13 @@ import Preload from '../screens/Preload/';
 import SignIn from '../screens/Auth/SignIn/';
 import SignUp from '../screens/Auth/SignUp/';
 import ForgotPassword from '../screens/Auth/FogotPassword/';
-import Home from '../screens/Home/';
-import { TransitionSpecs } from '@react-navigation/stack';
+import MainTab from './MainTab';
 
 const Stack = createNativeStackNavigator();
 
 export default () => (
   <Stack.Navigator
-    initialRouteName='Signin'
+    initialRouteName='Preload'
     screenOptions={{
       headerStyle: {
         backgroundColor: '#09142c',
@@ -27,6 +26,6 @@ export default () => (
     <Stack.Screen options={{headerShown: false}} name="SignIn" component={SignIn} />
     <Stack.Screen name="Registrar" component={SignUp} />
     <Stack.Screen name="Recuperação de Senha" component={ForgotPassword} />
-    <Stack.Screen name="Home" component={Home} />
+    <Stack.Screen options={{headerShown: false}} name="MainTab" component={MainTab} />
   </Stack.Navigator>
 );

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import MainStack from './stacks/MainStack'
+import MainStack from './stacks/MainStack';
+import MainTab from './stacks/MainTab';
 import { StatusBar } from 'expo-status-bar';
 import UserContextProvider from './contexts/UserContext';
 

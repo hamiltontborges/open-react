@@ -26,8 +26,7 @@ import SignButton from '../../../components/Sign/SignButton';
 import GoogleButton from '../../../components/Sign/GoogleButton';
 
 import logo from '../../../assets/open-unifeob.png';
-import { getDocByEmail, getDocById, signIn } from '../../../db/Firestore';
-import { get } from 'react-native/Libraries/Utilities/PixelRatio';
+import { getDocByEmail, signIn } from '../../../db/Firestore';
 
 const SignIn = () => {
   const { dispatch: userDispatch } = useContext(UserContext);
@@ -62,23 +61,22 @@ const SignIn = () => {
     return unsubscribe
   }, []);
 
-
-
-  const updateUserLogin = async (email) => {
+  const updateUserLogin = async (email, token) => {
     try {
       const item = await getDocByEmail(email);
       item.forEach((docu) => {
         signIn(docu.id);
-        setContext(docu.id, docu.data().name, docu.data().email, docu.data().picture)
+        const data = docu.data()
+        setContext(token, data.name, data.email, data.picture, data.course)
       })
     } catch(error) {
       console.log(error);
     }
   }
 
-  const setContext = (id, name, email, picture) => {
+  const setContext = (token, name, email, picture, course) => {
 
-    AsyncStorage.setItem('token', id);
+    AsyncStorage.setItem('token', token);
 
     userDispatch( {
       type: 'setAvatar',
@@ -93,13 +91,17 @@ const SignIn = () => {
       payload: {
         fullname: name
       },
+      type: 'setCourse',
+      payload: {
+        course: course
+      },
     })
   }
 
   const login = async () => {
     try {
-      await loginUser(email, password);
-      updateUserLogin(email);
+      let token = await loginUser(email, password);
+      updateUserLogin(email, token);
       setSnackBarInfo({ visible: true, color: 'green', message: 'Login efetuado com sucesso!' })
       setTimeout(() => navigation.replace('Home'), 1500);
     }

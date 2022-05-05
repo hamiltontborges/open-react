@@ -56,3 +56,7 @@ export const getDocById = async (id) => {
     console.log("No such document!");
   }
 }
+
+export const checkToken = async () => {
+  
+}

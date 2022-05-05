@@ -10,7 +10,7 @@ import { auth } from '../firebase-config';
 
 onAuthStateChanged(auth, user => {
   if (user != null) {
-    console.log('We are authenticated now!');
+    // console.log('We are authenticated now!');
   }
   // Do other things
 });
@@ -32,8 +32,8 @@ export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     console.log(`Logged in with: ${email}`);
-    console.log(userCredential.user.uid);
-    return userCredential.user;
+    // console.log(userCredential.user.stsTokenManager.accessToken);
+    return userCredential.user.stsTokenManager.accessToken;
   }
   catch (error) {
     if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {

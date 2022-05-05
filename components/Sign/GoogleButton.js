@@ -64,7 +64,7 @@ export default GoogleButton = () => {
     userInfoResponse.json().then(data => {
       setUserInfo(data);
       isSignUp(data.email, data.name, data.picture);
-      AsyncStorage.setItem('token', data.id);
+      AsyncStorage.setItem('token', response.authentication.accessToken);
       setContext(data.name, data.email, data.picture);
     });
   }

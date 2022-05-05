@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
 
+
 const Preload = () => {
 
   const navigation = useNavigation();
@@ -12,9 +13,10 @@ const Preload = () => {
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem('token');
-      if(token !== null) {
-        //validar token
-        navigation.replace('Home');
+      if(token) {
+        // navigation.replace('SignIn')
+        navigation.replace('MainTab');
+        // navigation.reset({routes: [{name: 'MainTab'}]});
       } else {
         setTimeout(() => {
           navigation.replace('SignIn');
