@@ -37,7 +37,8 @@ const SignUp = () => {
       .required('Preenchimento obrigatório'),
     name: yup
       .string()
-      .min(10, ({ min }) => `O nome deve ter nome mínimo ${min} caracteres`)
+      .min(10, ({ min }) => `O nome deve ter no mínimo ${min} caracteres`)
+      .max(40, ({ max}) => `O nome deve ter no máximo ${max} caracteres`)
       .required('Preenchimento obrigatório'),
     password: yup
       .string()

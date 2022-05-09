@@ -5,6 +5,7 @@ import MainTab from './stacks/MainTab';
 import { StatusBar } from 'expo-status-bar';
 import UserContextProvider from './contexts/UserContext';
 import { registerRootComponent } from 'expo';
+import 'react-native-gesture-handler';
 
 
 export default function App() {

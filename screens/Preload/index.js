@@ -1,26 +1,29 @@
 import { StyleSheet, View, Image, ActivityIndicator } from 'react-native';
-import React, {useEffect } from 'react';
+import React, {useEffect,useContext } from 'react';
 import logo from '../../assets/open-unifeob.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
-
+import { UserContext } from '../../contexts/UserContext';
 
 const Preload = () => {
 
   const navigation = useNavigation();
 
+  const { state: user } = useContext(UserContext);
+
   useEffect(() => {
     const checkToken = async () => {
       const token = await AsyncStorage.getItem('token');
-      if(token) {
+      console.log(token);
+      if(user !== '' || user !== null) {
         navigation.replace('SignIn')
-        // navigation.replace('MainTab');
+        // navigation.replace('Drawer');
         // navigation.reset({routes: [{name: 'MainTab'}]});
       } else {
         setTimeout(() => {
           navigation.replace('SignIn');
-        }, 2000)
+        }, 1000)
       }
     }
     checkToken();

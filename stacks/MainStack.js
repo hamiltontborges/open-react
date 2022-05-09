@@ -1,10 +1,11 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Preload from '../screens/Preload/';
-import SignIn from '../screens/Auth/SignIn/';
+import SignIn from '../screens/Auth/SignIn';
 import SignUp from '../screens/Auth/SignUp/';
 import ForgotPassword from '../screens/Auth/FogotPassword/';
 import MainTab from './MainTab';
+import DrawerStack from './DrawerStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,10 +23,10 @@ export default () => (
       },
     }}
   >
-    <Stack.Screen options={{headerShown: false}} name="Preload" component={Preload} />
-    <Stack.Screen options={{headerShown: false}} name="SignIn" component={SignIn} />
+    <Stack.Screen options={{ headerShown: false }} name="Preload" component={Preload} />
+    <Stack.Screen options={{ headerShown: false }} name="SignIn" component={SignIn} />
     <Stack.Screen name="Registrar" component={SignUp} />
     <Stack.Screen name="Recuperação de Senha" component={ForgotPassword} />
-    <Stack.Screen options={{headerShown: false}} name="MainTab" component={MainTab} />
+    <Stack.Screen options={{ headerShown: false }} name="Drawer" component={DrawerStack} />
   </Stack.Navigator>
 );

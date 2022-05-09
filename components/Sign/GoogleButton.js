@@ -31,7 +31,7 @@ export default GoogleButton = () => {
     if (response?.type === 'success') {
       setAccessToken(response.authentication.accessToken)
       await getUserData(response.authentication.accessToken)
-      navigation.replace('MainTab');
+      navigation.replace('Drawer');
     }
   }, [response]);
 

@@ -114,7 +114,7 @@ const SignIn = () => {
       let token = await loginUser(email, password);
       updateUserLogin(email, token);
       setSnackBarInfo({ visible: true, color: 'green', message: 'Login efetuado com sucesso!' })
-      setTimeout(() => navigation.replace('MainTab'), 1500);
+      setTimeout(() => navigation.replace('Drawer'), 1500);
     }
     catch (error) {
       setSnackBarInfo({ visible: true, color: 'red', message: error })
