@@ -8,7 +8,6 @@ import MainInput from '../../../components/Main/MainInput';
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   Image,
   ScrollView
@@ -81,7 +80,7 @@ const VideoUpload = () => {
 
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center" }} style={styles.container}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}>
 
       <View style={styles.inputContainer}>
         <MainInput
@@ -147,7 +146,7 @@ export default VideoUpload
 const styles = StyleSheet.create({
   inputContainer: {
     marginTop: 20,
-    width: '90%'
+    width: '90%',
   },
   info: {
     textAlign: 'center',

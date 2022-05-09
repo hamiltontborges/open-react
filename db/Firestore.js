@@ -72,7 +72,7 @@ export const getVideosByDescDate = async () => {
   return videos;
 }
 
-export const postVideo = async (user, id_video_yt, name, description, thumb, tags, date_posted_yt) => {
+export const postVideo = async (user, id_video_yt, name, description, thumb, tags=[], date_posted_yt) => {
   try{
     const docRef = await addDoc(videosCollection, {
       user: {
