@@ -19,6 +19,8 @@ export const UserReducer = (state, action) => {
       return { ...state, fullname: action.payload.fullname};
     case 'setCourse': 
       return { ...state, course: action.payload.course};
+    case 'setBirth': 
+      return { ...state, birth: action.payload.birth};
     default:
       return state;
   }

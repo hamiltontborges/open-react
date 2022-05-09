@@ -31,6 +31,7 @@ const VideoPlayer = ({ route }) => {
         <Text style={styles.datePosted}>Postado em {formatDate(route.params.paramKey.date_posted.toDate().toLocaleString())}</Text>
         <View style={styles.areaText}>
           <View style={styles.userArea}>
+
             {route.params.paramKey.user.avatar !== ''
               ? <Image style={styles.userAvatar} source={{ uri: route.params.paramKey.user.avatar }} />
               : <Avatar.Text size={40} label={firstLetter(route.params.paramKey.user.name)} color={'white'} style={{ backgroundColor: '#264F9C' }} />
@@ -39,10 +40,15 @@ const VideoPlayer = ({ route }) => {
               {route.params.paramKey.user.name}
             </Text>
           </View>
-          <View style={styles.tagArea}>
-          {tags.map((value, key) =>(
-            <Text key={key} style={styles.tags}> {value} </Text>
-          ))}
+          <View >
+            <View>
+              <Text style={styles.tagTitle}>Tags:</Text>
+              <View style={styles.tagArea}>
+                {tags.map((value, key) => (
+                  <Text key={key} style={styles.tags}> {value} </Text>
+                ))}
+              </View>
+            </View>
           </View>
           <Text style={styles.descriptionTitle}>Descrição:</Text>
           <Text>{route.params.paramKey.description}</Text>
@@ -88,8 +94,13 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 5,
   },
+  tagTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginTop: 15,
+    marginBottom: 5,
+  },
   tagArea: {
-    marginTop: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',
   },

@@ -72,6 +72,17 @@ export const getVideosByDescDate = async () => {
   return videos;
 }
 
+export const getVideosBySearch = async (word) => {
+  let videos = []
+  const docSnap = query(videosCollection, where("name", "==", word));
+  const resultado = await getDocs(docSnap);
+  resultado.forEach((docu) => {
+    const data = docu.data();
+    videos.push(data)
+  })
+  return videos;
+}
+
 export const postVideo = async (user, id_video_yt, name, description, thumb, tags=[], date_posted_yt) => {
   try{
     const docRef = await addDoc(videosCollection, {

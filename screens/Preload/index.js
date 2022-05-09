@@ -17,12 +17,14 @@ const Preload = () => {
       const token = await AsyncStorage.getItem('token');
       console.log(token);
       if(user !== '' || user !== null) {
-        navigation.replace('SignIn')
+        setTimeout(() => {
+          navigation.replace('SignIn');
+        }, 1000)
         // navigation.replace('Drawer');
         // navigation.reset({routes: [{name: 'MainTab'}]});
       } else {
         setTimeout(() => {
-          navigation.replace('SignIn');
+          navigation.replace('Home');
         }, 1000)
       }
     }

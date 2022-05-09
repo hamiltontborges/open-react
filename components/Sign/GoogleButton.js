@@ -45,14 +45,14 @@ export default GoogleButton = () => {
       item.forEach((docu) => {
         const data = docu.data();
         console.log(docu.id)
-        setContext(docu.id, data.full_name, data.email, data.picture, data.course)
+        setContext(docu.id, data.full_name, data.email, data.picture, data.course, data.birth)
       })
     } catch (error) {
       console.log(error);
     }
   }
   
-  const setContext = (id, name, email, picture, course) => {
+  const setContext = (id, name, email, picture, course, birth) => {
     userDispatch({
       type: 'setId',
       payload: {
@@ -80,9 +80,15 @@ export default GoogleButton = () => {
     userDispatch({
       type: 'setCourse',
       payload: {
-        fullname: course
+        course: course
       }
     });
+    userDispatch({
+      type: 'setBirth',
+      payload: {
+        birth: birth
+      }
+    })
   }
 
   const getUserData = async (accessToken) => {

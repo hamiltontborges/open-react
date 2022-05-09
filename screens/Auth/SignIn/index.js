@@ -66,14 +66,14 @@ const SignIn = () => {
       item.forEach((docu) => {
         signIn(docu.id);
         const data = docu.data();
-        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course)
+        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course, data.birth_date)
       })
     } catch (error) {
       console.log(error);
     }
   }
 
-  const setContext = (token, id, name, email, picture, course) => {
+  const setContext = (token, id, name, email, picture, course, birth) => {
 
     AsyncStorage.setItem('token', token);
 
@@ -105,6 +105,12 @@ const SignIn = () => {
       type: 'setCourse',
       payload: {
         course: course
+      }
+    });
+    userDispatch({
+      type: 'setBirth',
+      payload: {
+        birth: birth
       }
     })
   }

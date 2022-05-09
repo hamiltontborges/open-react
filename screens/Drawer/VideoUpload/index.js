@@ -83,6 +83,7 @@ const VideoUpload = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}>
 
       <View style={styles.inputContainer}>
+        <Text style={styles.title}>Postar vídeo</Text>
         <MainInput
           nameInput={'link'}
           label={'Link do vídeo do Youtube'}
@@ -144,6 +145,13 @@ const VideoUpload = () => {
 export default VideoUpload
 
 const styles = StyleSheet.create({
+  title: {
+    color: '#1d3468',
+    fontSize: 22,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
   inputContainer: {
     marginTop: 20,
     width: '90%',

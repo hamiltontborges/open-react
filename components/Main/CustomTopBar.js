@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, TouchableOpacity, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -11,8 +11,19 @@ import { UserContext } from '../../contexts/UserContext';
 const CustomTopBar = ({ state, navigation }) => {
 
   const { state: user } = useContext(UserContext);
+  const [search, setSearch] = useState('');
 
   const [openSearch, setOpenSearch] = useState(true);
+
+  useEffect(() => {
+    navigation.navigate('Search', {
+      paramKey: search,
+    })
+    if(search === '') {
+      navigation.navigate('Home');
+    }
+  }, [search])
+
 
   return (
     <>
@@ -20,7 +31,7 @@ const CustomTopBar = ({ state, navigation }) => {
         <View style={styles.menuArea}>
           <TouchableOpacity
             style={styles.tabItem}
-          onPress={() => navigation.openDrawer()}
+            onPress={() => navigation.openDrawer()}
           >
             <Entypo name="menu" size={32} color="white" />
 
@@ -38,20 +49,16 @@ const CustomTopBar = ({ state, navigation }) => {
             <View animation={!openSearch ? "slideInRight" : "slideOutRight"} duration={200} style={[styles.inputArea]}>
               <MaterialIcons style={styles.iconInput} name={'search'} size={24} color="#353535" />
               <TextInput
-                // name={nameInput}
+                name={'searchInput'}
                 style={styles.input}
+                value={search}
                 placeholder={"Pesquisar vídeo"}
-                onKeyPress={() => navigation.navigate('Search')}
-                on
-                // value={value}
-                // onChangeText={onChangeText}
-                // onBlur={onBlur}
-                // keyboardType={keyboardType}
-                // secureTextEntry={password}
+                onChangeText={(value) => {
+                  setSearch(value)}}
                 placeholderTextColor="#7E7E7E"
                 onFocus={() => setOpenSearch(false)}
               />
-              <TouchableOpacity onPress={() => setOpenSearch(true)}>
+              <TouchableOpacity onPress={() => {setOpenSearch(true), setSearch('')}}>
                 <Entypo style={styles.crossIcon} name="cross" size={24} color="#353535" />
               </TouchableOpacity>
             </View>

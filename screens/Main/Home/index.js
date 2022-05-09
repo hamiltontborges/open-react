@@ -1,11 +1,9 @@
-import { StyleSheet, Text, View, ActivityIndicator, ScrollView, RefreshControl } from 'react-native'
-import React, { useState, useEffect, useContext } from 'react'
-import { UserContext } from '../../../contexts/UserContext';
+import { StyleSheet, View, ActivityIndicator, ScrollView, RefreshControl } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { getVideosByDescDate } from '../../../db/Firestore';
 import CardVideo from '../../../components/Video/CardVideo';
 
 const Home = () => {
-  const { state: user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
   const [refreshing, setRefreshing] = useState(false);

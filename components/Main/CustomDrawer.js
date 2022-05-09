@@ -22,7 +22,6 @@ import { firstLetter } from '../../regex/functionsRegex';
 export const CustomDrawer = (props) => {
 
   const { state: user } = useContext(UserContext);
-
   const { navigation } = props;
 
   const createButtonAlert = () =>
