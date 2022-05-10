@@ -7,10 +7,10 @@ export function getVideoId(link_video) {
 }
 
 export function formatDate(datePosted) {
-  const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul","Ago","Set","Out","Nov","Dez"];
+  const meses = ["Jan", "Fev", "Mar", "Abr", "Maio", "Jun", "Jul","Ago","Set","Out","Nov","Dez"];
   const date = new Date(datePosted)
   const day = date.getDate().toString().padStart(2, '0')
-  const month = meses[(date.getMonth() + 1).toString()]
+  const month = meses[(date.getMonth()).toString()]
   const year = date.getFullYear()
 
   return `${day} ${month} ${year}`

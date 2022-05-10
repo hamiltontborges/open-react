@@ -19,6 +19,7 @@
         "@react-navigation/stack": "^6.2.1",
         "expo": "~44.0.0",
         "expo-auth-session": "~3.5.0",
+        "expo-error-recovery": "^3.1.0",
         "expo-google-sign-in": "~10.1.0",
         "expo-location": "~14.0.1",
         "expo-random": "~12.1.1",
@@ -6149,10 +6150,9 @@
       }
     },
     "node_modules/expo-error-recovery": {
-      "version": "3.0.5",
-      "resolved": "https://registry.npmjs.org/expo-error-recovery/-/expo-error-recovery-3.0.5.tgz",
-      "integrity": "sha512-VM6OOecjt0aPu5/eCdGGJfNjvAZIemaQym0JF/+SA5IlLiPpEfbVCDTO/5yiS8Zb5fKpeABx+GCRmtfnFqvRRw==",
-      "optional": true,
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/expo-error-recovery/-/expo-error-recovery-3.1.0.tgz",
+      "integrity": "sha512-qUxCW7kPB6AVX5h3ZPVnxw4LLZWsRwAPBtRDlh1UDN7GWZ+CQN1SNk0w0BPotjNtSlXEZSFDqKqtoDDAUYjNmg==",
       "peerDependencies": {
         "expo": "*"
       }
@@ -6355,6 +6355,15 @@
       "dependencies": {
         "compare-urls": "^2.0.0"
       },
+      "peerDependencies": {
+        "expo": "*"
+      }
+    },
+    "node_modules/expo/node_modules/expo-error-recovery": {
+      "version": "3.0.5",
+      "resolved": "https://registry.npmjs.org/expo-error-recovery/-/expo-error-recovery-3.0.5.tgz",
+      "integrity": "sha512-VM6OOecjt0aPu5/eCdGGJfNjvAZIemaQym0JF/+SA5IlLiPpEfbVCDTO/5yiS8Zb5fKpeABx+GCRmtfnFqvRRw==",
+      "optional": true,
       "peerDependencies": {
         "expo": "*"
       }
@@ -16819,6 +16828,15 @@
         "md5-file": "^3.2.3",
         "pretty-format": "^26.5.2",
         "uuid": "^3.4.0"
+      },
+      "dependencies": {
+        "expo-error-recovery": {
+          "version": "3.0.5",
+          "resolved": "https://registry.npmjs.org/expo-error-recovery/-/expo-error-recovery-3.0.5.tgz",
+          "integrity": "sha512-VM6OOecjt0aPu5/eCdGGJfNjvAZIemaQym0JF/+SA5IlLiPpEfbVCDTO/5yiS8Zb5fKpeABx+GCRmtfnFqvRRw==",
+          "optional": true,
+          "requires": {}
+        }
       }
     },
     "expo-application": {
@@ -16868,10 +16886,9 @@
       "requires": {}
     },
     "expo-error-recovery": {
-      "version": "3.0.5",
-      "resolved": "https://registry.npmjs.org/expo-error-recovery/-/expo-error-recovery-3.0.5.tgz",
-      "integrity": "sha512-VM6OOecjt0aPu5/eCdGGJfNjvAZIemaQym0JF/+SA5IlLiPpEfbVCDTO/5yiS8Zb5fKpeABx+GCRmtfnFqvRRw==",
-      "optional": true,
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/expo-error-recovery/-/expo-error-recovery-3.1.0.tgz",
+      "integrity": "sha512-qUxCW7kPB6AVX5h3ZPVnxw4LLZWsRwAPBtRDlh1UDN7GWZ+CQN1SNk0w0BPotjNtSlXEZSFDqKqtoDDAUYjNmg==",
       "requires": {}
     },
     "expo-file-system": {

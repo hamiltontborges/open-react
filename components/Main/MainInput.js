@@ -15,8 +15,8 @@ const MainInput = ({ nameInput, label, placeholder, onChangeText, multiline = fa
         multiline={multiline}
         numberOfLines={numberOfLines}
         outlineColor={'#1d3468'}
-        activeOutlineColor={'#1d3468'} 
-/>
+        activeOutlineColor={'#1d3468'}
+      />
     </View>
   )
 }

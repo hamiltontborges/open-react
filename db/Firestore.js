@@ -31,6 +31,16 @@ export const signIn = async (id) => {
   await updateDoc(doc(db, "users", id), { last_signin: Timestamp.fromDate(new Date()) });
 }
 
+export const updateUser = async (id, name, avatar, course, birth) => {
+  await updateDoc(doc(db, "users", id), { 
+    full_name: name,
+    picture: avatar,
+    course: course,
+    birth_date: birth,
+    date_update: Timestamp.fromDate(new Date()),
+  });
+}
+
 export const signUp = async (email, name = '', pictureLink = '', last_signin = '') => {
   const docRef = await addDoc(usersCollection, {
     email: email,

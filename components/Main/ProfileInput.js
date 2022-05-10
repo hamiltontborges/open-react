@@ -4,18 +4,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
 
-const ProfileInput = ({ name, value, placeholder, icon }) => {
+const ProfileInput = ({ editable=true, name, value, placeholder, icon, onChangeText }) => {
   return (
     <View>
       <View style={[styles.inputArea]}>
-      {icon}
+        {icon}
         <TextInput
+          editable={editable}
           name={name}
           style={styles.input}
           placeholder={placeholder}
           value={value}
           placeholderTextColor="#7E7E7E"
           selectionColor={'#09142c'}
+          onChangeText={onChangeText}
         />
       </View>
     </View>

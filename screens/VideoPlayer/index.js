@@ -45,13 +45,13 @@ const VideoPlayer = ({ route }) => {
               <Text style={styles.tagTitle}>Tags:</Text>
               <View style={styles.tagArea}>
                 {tags.map((value, key) => (
-                  <Text key={key} style={styles.tags}> {value} </Text>
+                  <Text key={key} style={styles.tags}>{`#${value}`}</Text>
                 ))}
               </View>
             </View>
           </View>
           <Text style={styles.descriptionTitle}>Descrição:</Text>
-          <Text>{route.params.paramKey.description}</Text>
+          <Text numberOfLines={10} ellipsizeMode='tail' >{route.params.paramKey.description}</Text>
         </View>
       </View>
     </ScrollView>

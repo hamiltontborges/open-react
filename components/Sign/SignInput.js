@@ -17,6 +17,7 @@ export default ({ nameInput, iconName, placeholder, value, onChangeText, onBlur,
           keyboardType={keyboardType}
           secureTextEntry={password}
           placeholderTextColor="#7E7E7E"
+          selectionColor={'#09142c'}
         />
       </View>
       {hasError ? <Text style={styles.messageErrorText}>{messageError}</Text> : <></>}
