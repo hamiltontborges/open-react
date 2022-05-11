@@ -14,7 +14,7 @@ import SelectDropdown from 'react-native-select-dropdown'
 import { courses } from './cousers';
 import SignButton from '../../../components/Sign/SignButton';
 import { updateUser } from '../../../db/Firestore';
-
+import * as ImagePicker from 'expo-image-picker';
 
 
 const Profile = () => {
@@ -93,17 +93,35 @@ const Profile = () => {
     })
   }
 
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setAvatar(result.uri);
+    }
+  }
+
   return (
     <View>
       <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}>
         <View style={styles.header}>
+        <TouchableOpacity onPress={pickImage} style={styles.photoTouch}>
           {
             user.avatar !== ''
               ?
-              <Avatar.Image size={100} source={{ uri: user.avatar }} style={styles.image} />
+              <Avatar.Image size={100} source={{ uri: avatar }} style={styles.image} />
               :
               <Avatar.Text size={100} label={firstLetter(user.fullname)} color={'white'} style={styles.image} />
           }
+          </TouchableOpacity>
         </View>
         <View style={styles.infoArea}>
           <ProfileInput
@@ -188,9 +206,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#09142c',
     marginBottom: 10,
   },
+  photoTouch: {
+    borderRadius: 50,
+    top: 15,
+    alignSelf: 'center',
+  },
   image: {
     backgroundColor: '#264F9C',
-    top: 15,
     alignSelf: 'center',
   },
   infoArea: {

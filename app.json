@@ -36,6 +36,14 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "com.openunifeob.app"
+    "scheme": "com.openunifeob.app",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ]
   }
 }
