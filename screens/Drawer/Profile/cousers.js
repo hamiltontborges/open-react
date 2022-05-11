@@ -1,4 +1,5 @@
 export const courses = [
+  'Selecione o curso',
   'Não Estudo',
   'Administração',
   'Análise e Desenvolvimento de Sistemas',

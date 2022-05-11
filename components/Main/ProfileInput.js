@@ -1,13 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, View, TextInput } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
 
 
-const ProfileInput = ({ editable=true, name, value, placeholder, icon, onChangeText }) => {
+const ProfileInput = ({ editable = true, name, value, placeholder, icon, onChangeText }) => {
   return (
     <View>
-      <View style={[styles.inputArea]}>
+      <View style={styles.inputArea}>
         {icon}
         <TextInput
           editable={editable}

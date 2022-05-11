@@ -4,6 +4,7 @@ export const initialState = {
   email: '',
   fullname: '',
   course: '',
+  birth: null,
   favorites: [],
 }
 

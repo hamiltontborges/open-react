@@ -27,6 +27,7 @@ import GoogleButton from '../../../components/Sign/GoogleButton';
 
 import logo from '../../../assets/open-unifeob.png';
 import { getDocByEmail, signIn } from '../../../db/Firestore';
+import { dateToString } from '../../../regex/functionsRegex';
 
 const SignIn = () => {
   const { dispatch: userDispatch } = useContext(UserContext);
@@ -66,7 +67,7 @@ const SignIn = () => {
       item.forEach((docu) => {
         signIn(docu.id);
         const data = docu.data();
-        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course, data.birth_date)
+        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course, dateToString(data.birth_date))
       })
     } catch (error) {
       console.log(error);

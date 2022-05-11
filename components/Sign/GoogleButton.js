@@ -12,6 +12,7 @@ import {
   IOS_CLIENT_ID,
   EXPO_CLIENT_ID,
 } from '@env';
+import { dateToString, formatDate } from '../../regex/functionsRegex';
 
 
 export default GoogleButton = () => {
@@ -44,8 +45,8 @@ export default GoogleButton = () => {
       const item = await getDocByEmail(email);
       item.forEach((docu) => {
         const data = docu.data();
-        console.log(docu.id)
-        setContext(docu.id, data.full_name, data.email, data.picture, data.course, data.birth)
+        console.log()
+        setContext(docu.id, data.full_name, data.email, data.picture, data.course, dateToString(data.birth_date))
       })
     } catch (error) {
       console.log(error);

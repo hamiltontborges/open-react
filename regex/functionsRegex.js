@@ -20,3 +20,7 @@ export function firstLetter(name) {
   const firstLetter = name.substr(0, 1).toUpperCase();
   return firstLetter;
 }
+
+export function dateToString(datePosted) {
+  return datePosted.toDate().toString()
+}
