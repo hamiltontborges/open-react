@@ -37,23 +37,27 @@ export default GoogleButton = () => {
   }, [response]);
 
   const isSignUp = async (email, name, pictureLink) => {
-    siginGoogle(email, name, pictureLink);
-  }
-
-  const updateUserLogin = async (email) => {
-    try {
-      const item = await getDocByEmail(email);
+    await siginGoogle(email, name, pictureLink);
+    const item = await getDocByEmail(email);
       item.forEach((docu) => {
         const data = docu.data();
-        console.log()
-        setContext(docu.id, data.full_name, data.email, data.picture, data.course, dateToString(data.birth_date))
+        setContext(docu.id, data.full_name, data.email, data.picture, data.course, data.birth_date ? dateToString(data.birth_date) : '', data.perfil)
       })
-    } catch (error) {
-      console.log(error);
-    }
   }
+
+  // const updateUserLogin = async (email) => {
+  //   try {
+  //     const item = await getDocByEmail(email);
+  //     item.forEach((docu) => {
+  //       const data = docu.data();
+  //       setContext(docu.id, data.full_name, data.email, data.picture, data.course, data.birth_date ? dateToString(data.birth_date) : '', data.perfil)
+  //     })
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
   
-  const setContext = (id, name, email, picture, course, birth) => {
+  const setContext = (id, name, email, picture, course='', birth='', perfil='') => {
     userDispatch({
       type: 'setId',
       payload: {
@@ -89,6 +93,12 @@ export default GoogleButton = () => {
       payload: {
         birth: birth
       }
+    });
+    userDispatch({
+      type: 'setPerfil',
+      payload: {
+        perfil: perfil
+      }
     })
   }
 
@@ -101,7 +111,8 @@ export default GoogleButton = () => {
       setUserInfo(data);
       isSignUp(data.email, data.name, data.picture);
       AsyncStorage.setItem('token', response.authentication.accessToken);
-      updateUserLogin(data.email)
+      // updateUserLogin(data.email)
+      
     });
   }
 

@@ -67,14 +67,14 @@ const SignIn = () => {
       item.forEach((docu) => {
         signIn(docu.id);
         const data = docu.data();
-        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course, dateToString(data.birth_date))
+        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course, dateToString(data.birth_date), data.perfil)
       })
     } catch (error) {
       console.log(error);
     }
   }
 
-  const setContext = (token, id, name, email, picture, course, birth) => {
+  const setContext = (token, id, name, email, picture, course, birth, perfil) => {
 
     AsyncStorage.setItem('token', token);
 
@@ -112,6 +112,12 @@ const SignIn = () => {
       type: 'setBirth',
       payload: {
         birth: birth
+      }
+    });
+    userDispatch({
+      type: 'setPerfil',
+      payload: {
+        perfil: perfil
       }
     })
   }

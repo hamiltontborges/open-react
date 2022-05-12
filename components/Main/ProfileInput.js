@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 
 
-const ProfileInput = ({ editable = true, name, value, placeholder, icon, onChangeText }) => {
+const ProfileInput = ({ editable = true, name, value, placeholder, icon, onChangeText}) => {
   return (
     <View>
       <View style={styles.inputArea}>

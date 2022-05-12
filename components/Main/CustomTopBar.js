@@ -46,7 +46,7 @@ const CustomTopBar = ({ state, navigation }) => {
               </TouchableOpacity>
             </View>
             :
-            <View animation={!openSearch ? "slideInRight" : "slideOutRight"} duration={200} style={[styles.inputArea]}>
+            <View animation={!openSearch ? "slideInRight" : "slideOutRight"} duration={500} style={[styles.inputArea]}>
               <MaterialIcons style={styles.iconInput} name={'search'} size={24} color="#353535" />
               <TextInput
                 name={'searchInput'}
@@ -73,7 +73,7 @@ export default CustomTopBar
 
 const styles = StyleSheet.create({
   topArea: {
-    height: 100,
+    height: 90,
     backgroundColor: '#09142c',
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   menuArea: {
     width: 60,
-    marginBottom: 15,
+    marginBottom: 10,
     marginLeft: 15,
   },
   searchArea: {
@@ -100,8 +100,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   areaSearchIcon: {
-    marginBottom: 25,
+    marginBottom: 10,
     marginRight: 20,
+  },
+  searchIcon: {
+    marginBottom: 5,
   },
   iconInput: {
     marginLeft: 10,

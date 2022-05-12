@@ -31,17 +31,18 @@ export const signIn = async (id) => {
   await updateDoc(doc(db, "users", id), { last_signin: Timestamp.fromDate(new Date()) });
 }
 
-export const updateUser = async (id, name, avatar, course, birth) => {
+export const updateUser = async (id, name, avatar, course, birth, perfil) => {
   await updateDoc(doc(db, "users", id), { 
     full_name: name,
     picture: avatar,
     course: course,
     birth_date: birth,
+    perfil: perfil,
     date_update: Timestamp.fromDate(new Date()),
   });
 }
 
-export const signUp = async (email, name = '', pictureLink = '', last_signin = '') => {
+export const signUp = async (email, name = '', pictureLink = '', last_signin = '', perfil='') => {
   const docRef = await addDoc(usersCollection, {
     email: email,
     full_name: name,
@@ -50,6 +51,7 @@ export const signUp = async (email, name = '', pictureLink = '', last_signin = '
     course: '',
     birth_date: '',
     last_signin: last_signin,
+    perfil: perfil,
   });
   console.log(docRef.id);
   return docRef.id;

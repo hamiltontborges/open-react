@@ -5,6 +5,7 @@ export const initialState = {
   fullname: '',
   course: '',
   birth: null,
+  perfil: '',
   favorites: [],
 }
 
@@ -22,6 +23,8 @@ export const UserReducer = (state, action) => {
       return { ...state, course: action.payload.course};
     case 'setBirth': 
       return { ...state, birth: action.payload.birth};
+    case 'setPerfil': 
+      return { ...state, perfil: action.payload.perfil};
     default:
       return state;
   }
