@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import { UserContext } from '../../../contexts/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 import { loginUser } from '../../../services/AuthService';
 import {
   onAuthStateChanged,
@@ -67,7 +66,7 @@ const SignIn = () => {
       item.forEach((docu) => {
         signIn(docu.id);
         const data = docu.data();
-        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course, dateToString(data.birth_date), data.perfil)
+        setContext(token, docu.id, data.full_name, data.email, data.picture, data.course, data.birth_date ? dateToString(data.birth_date) : '', data.perfil)
       })
     } catch (error) {
       console.log(error);
@@ -125,7 +124,7 @@ const SignIn = () => {
   const login = async () => {
     try {
       let token = await loginUser(email, password);
-      updateUserLogin(email, token);
+      await updateUserLogin(email, token);
       setSnackBarInfo({ visible: true, color: 'green', message: 'Login efetuado com sucesso!' })
       setTimeout(() => navigation.replace('Drawer'), 1500);
     }

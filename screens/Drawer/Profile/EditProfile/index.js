@@ -73,6 +73,11 @@ const Profile = () => {
     catch {
       setSnackBarInfo({ visible: true, color: 'red', message: 'Algo deu errado!' });
     }
+    finally {
+      setContext(name, avatar, course, birth, perfil);
+      await updateUser(user.id, name, avatar, course, birth, perfil)
+      setSnackBarInfo({ visible: true, color: 'green', message: 'Prefil atualizado com sucesso!' });
+    }
   }
 
   const storageUploadPhoto = async (resultUri) => {
