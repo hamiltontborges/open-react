@@ -20,6 +20,7 @@ import GoogleButton from '../../../components/Sign/GoogleButton';
 
 import logo from '../../../assets/open-unifeob.png';
 import { signUp } from '../../../db/Firestore';
+import PasswordInput from '../../../components/Sign/PasswordInput';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -102,7 +103,7 @@ const SignUp = () => {
                 messageError={errors.name}
               />
 
-              <SignInput
+              <PasswordInput
                 nameInput={'password'}
                 iconName={'lock'}
                 placeholder={"Senha"}
@@ -110,12 +111,11 @@ const SignUp = () => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 keyboardType={'default'}
-                password={true}
                 hasError={(errors.password && touched.password) ? true : false}
                 messageError={errors.password}
               />
 
-              <SignInput
+              <PasswordInput
                 nameInput={'confirmPassword'}
                 iconName={'lock'}
                 placeholder={"Confirme a senha"}
@@ -123,7 +123,6 @@ const SignUp = () => {
                 onChangeText={handleChange('confirmPassword')}
                 onBlur={handleBlur('confirmPassword')}
                 keyboardType={'default'}
-                password={true}
                 hasError={(errors.confirmPassword && touched.confirmPassword) ? true : false}
                 messageError={errors.confirmPassword}
               />

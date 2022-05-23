@@ -1,8 +1,15 @@
-import React from 'react';
-import { StyleSheet, View, TextInput, Text } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, TextInput, Text, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
-export default ({ nameInput, iconName, placeholder, value, onChangeText, onBlur, keyboardType, password, hasError, messageError }) => {
+export default ({ nameInput, iconName, placeholder, value, onChangeText, onBlur, keyboardType, hasError, messageError }) => {
+  const [visiblePass, setVisiblePass] = useState(true);
+
+  const handleVisiblePass = () => {
+    setVisiblePass(!visiblePass);
+  }
+
   return (
     <>
       <View style={[styles.inputArea, hasError ? styles.error : '']}>
@@ -15,16 +22,23 @@ export default ({ nameInput, iconName, placeholder, value, onChangeText, onBlur,
           onChangeText={onChangeText}
           onBlur={onBlur}
           keyboardType={keyboardType}
-          secureTextEntry={password}
+          secureTextEntry={visiblePass}
           placeholderTextColor="#7E7E7E"
           selectionColor={'#09142c'}
         />
-        {/* <MaterialIcons name={iconName} size={24} color="#353535" /> */}
+        <TouchableOpacity onPress={() => handleVisiblePass()}>
+          { visiblePass 
+          ? <Ionicons name="eye" size={24} color="#353535" />
+          : <Ionicons name="eye-off" size={24} color="#353535" /> 
+        }
+        </TouchableOpacity>
       </View>
       {hasError ? <Text style={styles.messageErrorText}>{messageError}</Text> : <></>}
     </>
   )
 }
+
+
 
 const styles = StyleSheet.create({
   inputArea: {
@@ -43,6 +57,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#353535',
     marginLeft: 10,
+    marginRight: 10,
   },
   error: {
     borderColor: 'red',

@@ -27,6 +27,7 @@ import GoogleButton from '../../../components/Sign/GoogleButton';
 import logo from '../../../assets/open-unifeob.png';
 import { getDocByEmail, signIn } from '../../../db/Firestore';
 import { dateToString } from '../../../regex/functionsRegex';
+import PasswordInput from '../../../components/Sign/PasswordInput';
 
 const SignIn = () => {
   const { dispatch: userDispatch } = useContext(UserContext);
@@ -160,7 +161,7 @@ const SignIn = () => {
                 messageError={errors.email}
               />
 
-              <SignInput
+              <PasswordInput
                 nameInput={'password'}
                 iconName={'lock'}
                 placeholder={"Senha"}
@@ -168,7 +169,6 @@ const SignIn = () => {
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 keyboardType={'default'}
-                password={true}
                 hasError={(errors.password && touched.password) ? true : false}
                 messageError={errors.password}
               />
